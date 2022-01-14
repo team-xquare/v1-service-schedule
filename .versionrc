@@ -2,10 +2,18 @@
     "types": [
         { "type": "⚡️", "section": "기능 추가", "hidden": false },
         { "type": "⚰️", "section": "기능 삭제", "hidden": false },
+        { "type": ":coffin:️", "section": "기능 삭제", "hidden": false },
         { "type": "🐛", "section": "버그 수정", "hidden": false },
+        { "type": ":bug:", "section": "버그 수정", "hidden": false },
         { "type": "♻️", "section": "리팩토링", "hidden": false },
+        { "type": ":recycle️:", "section": "리팩토링", "hidden": false },
         { "type": "📝", "section": "문서", "hidden": false },
+        { "type": ":memo:", "section": "문서", "hidden": false },
         { "type": "⚙️", "section": "프로젝트 세팅", "hidden": true },
-        { "type": "📑", "section": "구조 변경", "hidden": true }
+        { "type": ":settings:", "section": "프로젝트 세팅", "hidden": true },
+        { "type": "📑", "section": "구조 변경", "hidden": true },
+        { "type": ":bookmark_tabs:", "section": "구조 변경", "hidden": true },
+        { "type": "🧪", "section": "테스트 추가", "hidden": true },
+        { "type": ":test_tube:", "section": "테스트 추가", "hidden": true },
     ]
 }
