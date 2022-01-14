@@ -14,6 +14,6 @@
         { "type": "📑", "section": "구조 변경", "hidden": true },
         { "type": ":bookmark_tabs:", "section": "구조 변경", "hidden": true },
         { "type": "🧪", "section": "테스트 추가", "hidden": true },
-        { "type": ":test_tube:", "section": "테스트 추가", "hidden": true },
+        { "type": ":test_tube:", "section": "테스트 추가", "hidden": true }
     ]
 }
