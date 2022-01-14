@@ -5,7 +5,6 @@
         { "type": "🐛", "section": "버그 수정", "hidden": false },
         { "type": "♻️", "section": "리팩토링", "hidden": false },
         { "type": "📝", "section": "문서", "hidden": false },
-        { "type": "🧪️", "section": "테스트 코드 추가", "hidden": false }
         { "type": "⚙️", "section": "프로젝트 세팅", "hidden": true },
         { "type": "📑", "section": "구조 변경", "hidden": true },
     ]
