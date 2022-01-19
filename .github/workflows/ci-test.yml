@@ -1,4 +1,4 @@
-name: Lint CI
+name: Test CI
 
 on:
   push:
@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ ubuntu-latest ]
-        java-version: [ 15 ]
+        os: [ macos-latest, ubuntu-latest ]
+        java-version: [ 15, 17 ]
 
     steps:
       - uses: actions/checkout@v2
@@ -29,5 +29,5 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
-      - name: Test lint
-        run: gradle ktlintCheck
+      - name: Test codes
+        run: gradle test
