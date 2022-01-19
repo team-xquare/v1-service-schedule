@@ -20,14 +20,6 @@ jobs:
         with:
           java-version: ${{ matrix.java-version }}
           distribution: 'zulu'
-      - name: Cache gradle packages
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+          cache: 'gradle'
       - name: Test codes
         run: gradle test
