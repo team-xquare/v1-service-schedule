@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 // For formatting
-val ktlint by configurations.creating
+val ktlint: Configuration by configurations.creating
 
 plugins {
     id("org.springframework.boot") version "2.6.2"
@@ -11,10 +11,16 @@ plugins {
 }
 
 dependencies {
-    ktlint("com.pinterest:ktlint:0.43.2") {
+    ktlint("com.pinterest:ktlint:${Dependencies.KTLINT_VERSION}") {
         attributes {
             attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
         }
+    }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${Management.SPRING_CLOUD_VERSION}")
     }
 }
 
@@ -32,7 +38,6 @@ dependencies {
 
     // Spring Cloud AWS
     implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging")
-    implementation("org.springframework.cloud:spring-cloud-starter-aws-autoconfigure")
 
     // Jackson Modules
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
