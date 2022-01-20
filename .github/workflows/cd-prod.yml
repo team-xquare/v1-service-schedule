@@ -57,8 +57,12 @@ jobs:
     env:
       SLACK_TITLE: 'Deploy Succeeded'
       SLACK_COLOR: '#2EB67D'
-      SLACK_MESSAGE: 'Deploy ${{ needs.build.outputs.version }} to team-xquare/v1-service-schedule ghcr :rocket:'
+      SLACK_MESSAGE: ''
     steps:
+      - name: Set env when deploy succeed
+        if: ${{ needs.build.result == 'success' }}
+        run: |
+          echo "SLACK_MESSAGE=Deploy \`${{ needs.build.outputs.version }}\` to team-xquare/v1-service-schedule ghcr :rocket:
       - name: Set env when deploy failure
         if: ${{ needs.build.result == 'failure' }}
         run: |
