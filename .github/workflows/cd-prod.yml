@@ -1,0 +1,59 @@
+name: CD(Prod)
+
+on:
+  push:
+    tags:
+      - "*.*.*"
+
+jobs:
+  build:
+    environment: prod
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get-version.outputs.VERSION }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get the version from the tag
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+        shell: bash
+
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.GITHUB_USER }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push to Github Container Registry
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: |
+            ghcr.io/team-xquare/v1-service-schdedule:latest
+            ghcr.io/team-xquare/v1-service-schedule:${{ steps.get_version.outputs.VERSION }}
+
+  notify:
+    environment: prod
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    env:
+      SLACK_TITLE: 'Deploy Succeeded'
+      SLACK_COLOR: '#2EB67D'
+      SLACK_MESSAGE: 'Deploy `${{ needs.build.outputs.version }}` to team-xquare/v1-service-schedule ghcr :rocket:'
+    steps:
+      - name: Set env when deploy failure
+        if: ${{ needs.build.result == 'failure }}
+        run: |
+          echo "SLACK_TITLE='Deploy Failed'
+          echo "SLACK_COLOR=#E01E5A" >> $GITHUB_ENV
+          echo "SLACK_MESSAGE=Failed to deploy \`${{ needs.build.outputs.version }}\` to team-xquare/v1-service-schedule ghcr " >> $GITHUB_ENV
+
+      - name: Notify image push to Slack
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_TITLE: ${{ env.SLACK_TITLE }}
+          SLACK_COLOR: ${{ env.SLACK_COLOR }}
+          SLACK_MESSAGE: ${{ env.SLACK_MESSAGE }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
