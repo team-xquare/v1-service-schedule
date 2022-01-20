@@ -22,13 +22,15 @@ jobs:
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
         shell: bash
 
-      - name: Gradle Build
+      - name: Set up Java
         uses: actions/setup-java@v2
         with:
           java-version: ${{ matrix.java-version }}
           distribution: 'zulu'
           cache: 'gradle'
-      - run: gradle build --exclude-task test
+          
+      - name: Gradle Build  
+        run: gradle build --exclude-task test
 
       - name: Login to Github Container Registry
         uses: docker/login-action@v1
