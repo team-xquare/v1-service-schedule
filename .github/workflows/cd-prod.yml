@@ -57,7 +57,7 @@ jobs:
       SLACK_MESSAGE: 'Deploy `${{ needs.build.outputs.version }}` to team-xquare/v1-service-schedule ghcr :rocket:'
     steps:
       - name: Set env when deploy failure
-        if: ${{ needs.build.result == 'failure }}
+        if: ${{ needs.build.result == 'failure' }}
         run: |
           echo "SLACK_TITLE='Deploy Failed'
           echo "SLACK_COLOR=#E01E5A" >> $GITHUB_ENV
