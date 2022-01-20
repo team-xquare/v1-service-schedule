@@ -13,7 +13,7 @@ jobs:
       matrix:
         java-version: [ 15 ]
     outputs:
-      version: ${{ steps.get-version.outputs.VERSION }}
+      version: ${{ steps.get_version.outputs.VERSION }}
     steps:
       - uses: actions/checkout@v2
 
@@ -62,13 +62,13 @@ jobs:
       - name: Set env when deploy succeed
         if: ${{ needs.build.result == 'success' }}
         run: |
-          echo "SLACK_MESSAGE=Deploy \`${{ needs.build.outputs.version }}\` to team-xquare/v1-service-schedule ghcr :rocket:" >> $GITHUB_ENV
+          echo "SLACK_MESSAGE=Deploy `v${{ needs.build.outputs.version }}` to team-xquare/v1-service-schedule ghcr :rocket:" >> $GITHUB_ENV
       - name: Set env when deploy failure
         if: ${{ needs.build.result == 'failure' }}
         run: |
           echo "SLACK_TITLE='Deploy Failed'
           echo "SLACK_COLOR=#E01E5A" >> $GITHUB_ENV
-          echo "SLACK_MESSAGE=Failed to deploy \`${{ needs.build.outputs.version }}\` to team-xquare/v1-service-schedule ghcr" >> $GITHUB_ENV
+          echo "SLACK_MESSAGE=Failed to deploy `v${{ needs.build.outputs.version }}` to team-xquare/v1-service-schedule ghcr" >> $GITHUB_ENV
 
       - name: Notify image push to Slack
         uses: rtCamp/action-slack-notify@v2
