@@ -74,7 +74,7 @@ jobs:
       - name: Notify image push to Slack
         uses: rtCamp/action-slack-notify@v2
         env:
-          SLACK_USERNAME: ${{ env. }}
+          SLACK_USERNAME: ${{ env.SLACK_USERNAME }}
           SLACK_TITLE: ${{ env.SLACK_TITLE }}
           SLACK_COLOR: ${{ env.SLACK_COLOR }}
           SLACK_MESSAGE: ${{ env.SLACK_MESSAGE }}
