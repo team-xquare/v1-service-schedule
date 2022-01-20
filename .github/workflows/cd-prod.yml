@@ -72,7 +72,7 @@ jobs:
         if: ${{ needs.build.result == 'failure' }}
         run: |
           echo "SLACK_TITLE=Push Failed" >> $GITHUB_ENV
-          echo "SLACK_COLOR=#E01E5A" >> $GITHUB_ENV"
+          echo "SLACK_COLOR=#E01E5A" >> $GITHUB_ENV
           echo "SLACK_MESSAGE=Failed to push \`v${{ needs.build.outputs.version }}\` to team-xquare/v1-service-schedule ghcr" >> $GITHUB_ENV
 
       - name: Notify image push to Slack
