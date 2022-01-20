@@ -22,15 +22,13 @@ jobs:
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
         shell: bash
 
-      - name: Set up JDK
+      - name: Gradle Build
         uses: actions/setup-java@v2
         with:
           java-version: ${{ matrix.java-version }}
           distribution: 'zulu'
           cache: 'gradle'
-
-      - name: Gradle Build
-        run: gradle clean build --exclude-task test
+      - run: gradle build --exclude-task test
 
       - name: Login to Github Container Registry
         uses: docker/login-action@v1
@@ -62,7 +60,7 @@ jobs:
       - name: Set env when deploy succeed
         if: ${{ needs.build.result == 'success' }}
         run: |
-          echo "SLACK_MESSAGE=Deploy \`${{ needs.build.outputs.version }}\` to team-xquare/v1-service-schedule ghcr :rocket:
+          echo "SLACK_MESSAGE=Deploy \`${{ needs.build.outputs.version }}\` to team-xquare/v1-service-schedule ghcr :rocket: >> $GITHUB_ENV
       - name: Set env when deploy failure
         if: ${{ needs.build.result == 'failure' }}
         run: |
