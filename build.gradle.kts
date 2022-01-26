@@ -34,13 +34,20 @@ repositories {
 
 dependencies {
     // Spring Boot
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+
+    // Reactor
+    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
     // Spring Cloud AWS
     implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging")
 
     // Jackson Modules
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+
+    // Monitoring
+    implementation("io.sentry:sentry-spring-boot-starter:${Libs.SENTRY_VERSION}")
 
     // Kotlin Standard Library
     implementation("org.jetbrains.kotlin:kotlin-reflect")
