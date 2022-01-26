@@ -1,0 +1,20 @@
+cloud:
+  aws:
+    region:
+      static: ${AWS_REGION:ap-northeast-2}
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+    stack:
+      auto: false
+
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error
+
+sentry:
+  dsn: ${SENTRY_DSN}
+  traces-sample-rate: 1.0

@@ -20,6 +20,9 @@ jobs:
         with:
           java-version: ${{ matrix.java-version }}
           distribution: 'zulu'
-          cache: 'gradle'
-      - name: Test lint
-        run: gradle ktlintCheck
+
+      - name: Gradle Test
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: |
+            ktLintCheck

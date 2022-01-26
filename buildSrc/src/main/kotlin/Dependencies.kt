@@ -7,5 +7,5 @@ object Dependencies {
 }
 
 object Libs {
-
+    const val SENTRY_VERSION = "5.6.0"
 }
