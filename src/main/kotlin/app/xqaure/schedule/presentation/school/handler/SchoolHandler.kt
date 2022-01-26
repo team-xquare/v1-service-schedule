@@ -1,10 +1,10 @@
 package app.xqaure.schedule.presentation.school.handler
 
-import org.springframework.stereotype.Controller
+import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
 
-@Controller
+@Component
 class SchoolHandler {
     suspend fun getSchedule(request: ServerRequest): ServerResponse {
         TODO()

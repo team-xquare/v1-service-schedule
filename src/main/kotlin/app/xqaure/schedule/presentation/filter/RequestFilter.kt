@@ -15,7 +15,7 @@ import org.springframework.web.reactive.function.server.awaitBodyOrNull
  * @Bean
  * fun rootRouter() = coRouter {
  *      accept(APPLICATION_JSON).nest {
- *          GET("": handler::someFunction)
+ *          GET("", handler::someFunction)
  *          filter { request, handler -> logFilter(request, handler, logger) }
  *      }
  * }

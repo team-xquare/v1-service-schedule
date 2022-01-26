@@ -1,10 +1,10 @@
 package app.xqaure.schedule.presentation.group.handler
 
-import org.springframework.stereotype.Controller
+import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
 
-@Controller
+@Component
 class GroupHandler {
     suspend fun createGroup(request: ServerRequest): ServerResponse {
         TODO()
