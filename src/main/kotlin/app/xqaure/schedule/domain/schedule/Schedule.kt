@@ -1,11 +1,12 @@
 package app.xqaure.schedule.domain.schedule
 
 import org.springframework.data.annotation.Id
-import java.util.*
+import java.time.LocalDateTime
+import java.util.UUID
 
-class Schedule (
+class Schedule(
     id: UUID,
-    date: Date,
+    date: LocalDateTime,
     name: String,
     period: Int,
     scheduleId: UUID,
@@ -14,7 +15,7 @@ class Schedule (
     @Id
     private var id: UUID = id
 
-    private var date: Date = date
+    private var date: LocalDateTime = date
     private var name: String = name
     private var period: Int = period
     private var scheduleId: UUID = scheduleId

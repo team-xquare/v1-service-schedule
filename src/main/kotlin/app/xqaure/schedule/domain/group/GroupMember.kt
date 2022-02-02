@@ -1,9 +1,9 @@
 package app.xqaure.schedule.domain.group
 
 import org.springframework.data.annotation.Id
-import java.util.*
+import java.util.UUID
 
-class GroupMember (
+class GroupMember(
     id: UUID,
     userId: UUID,
     scheduleGroupId: UUID,
