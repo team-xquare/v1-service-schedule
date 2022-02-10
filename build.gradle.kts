@@ -64,7 +64,7 @@ dependencies {
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 }
 
@@ -114,7 +114,7 @@ val installGitHook by tasks.creating(Copy::class) {
     into(targetDir)
     rename("pre-push-$suffix", "pre-push")
 
-    fileMode = 755
+    fileMode = 0b111101101
 }
 
 project.tasks.getByName("build").dependsOn(":installGitHook")
