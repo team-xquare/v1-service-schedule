@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.apache.tools.ant.taskdefs.condition.Os
 
 // For formatting
 val ktlint: Configuration by configurations.creating
@@ -63,7 +64,7 @@ dependencies {
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 }
 
@@ -96,3 +97,24 @@ val ktlintFormat by tasks.creating(JavaExec::class) {
     args = listOf("-F", "src/**/*.kt")
     jvmArgs("--add-opens", "java.base/java.lang=ALL-UNNAMED")
 }
+
+val installGitHook by tasks.creating(Copy::class) {
+
+    description = "Install git hook to root project."
+
+    var suffix = "macos"
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        suffix = "windows"
+    }
+
+    val sourceDir = File(rootProject.rootDir, "pre-build/scripts/pre-push-$suffix")
+    val targetDir = File(rootProject.rootDir, ".git/hooks")
+
+    from(sourceDir)
+    into(targetDir)
+    rename("pre-push-$suffix", "pre-push")
+
+    fileMode = 0b111101101
+}
+
+project.tasks.getByName("build").dependsOn(":installGitHook")
