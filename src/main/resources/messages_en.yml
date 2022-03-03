@@ -1,0 +1,6 @@
+group:
+  create: "Group create was successful."
+
+school:
+  schedule:
+    create: "School schedule create was successful."
