@@ -1,7 +1,6 @@
 package app.xqaure.schedule.presentation.school
 
 import app.xqaure.schedule.application.school.SchoolUsecase
-import app.xqaure.schedule.presentation.dto.BasicResponse
 import app.xqaure.schedule.presentation.school.dto.AddScheduleRequest
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -31,8 +30,8 @@ class SchoolHandler(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    suspend fun addSchedule(@RequestBody @Valid request: AddScheduleRequest)
-        = schoolUsecase.createSchedule(name = request.name!!, date = request.date!!)
+    suspend fun addSchedule(@RequestBody @Valid request: AddScheduleRequest) =
+        schoolUsecase.createSchedule(name = request.name!!, date = request.date!!)
 
     @PutMapping("/{scheduleId}")
     suspend fun modifySchedule(@PathVariable scheduleId: UUID): ServerResponse {

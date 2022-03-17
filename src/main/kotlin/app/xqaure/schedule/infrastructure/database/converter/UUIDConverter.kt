@@ -22,6 +22,6 @@ class UUIDToByteArrayConverter : Converter<UUID, ByteArray> {
 @ReadingConverter
 class ByteArrayToUUIDConverter : Converter<ByteArray, UUID> {
 
-    override fun convert(source: ByteArray): UUID
-        = UUID.nameUUIDFromBytes(source)
+    override fun convert(source: ByteArray): UUID =
+        UUID.nameUUIDFromBytes(source)
 }

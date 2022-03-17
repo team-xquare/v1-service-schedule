@@ -9,11 +9,11 @@ import org.springframework.web.bind.support.WebExchangeBindException
 class GlobalExceptionHandler {
 
     @ExceptionHandler(WebExchangeBindException::class)
-    fun handleException(e: WebExchangeBindException): ErrorResponse
-        = ErrorResponse(
+    fun handleException(e: WebExchangeBindException): ErrorResponse =
+        ErrorResponse(
             code = 400,
-            message = e.
-                bindingResult
+            message = e
+                .bindingResult
                 .allErrors
                 .mapNotNull(DefaultMessageSourceResolvable::getDefaultMessage)
         )

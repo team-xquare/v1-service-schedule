@@ -9,13 +9,13 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.data.r2dbc.config.AbstractR2dbcConfiguration
 
 @Configuration
-class MySQLConfig (
+class MySQLConfig(
     @Value("\${spring.r2dbc.url}")
     private val url: String
 ) : AbstractR2dbcConfiguration() {
 
-    override fun connectionFactory(): ConnectionFactory
-        = ConnectionFactories.get(url)
+    override fun connectionFactory(): ConnectionFactory =
+        ConnectionFactories.get(url)
 
     override fun getCustomConverters(): MutableList<Any> {
         return mutableListOf(UUIDToByteArrayConverter(), ByteArrayToUUIDConverter())
