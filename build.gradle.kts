@@ -55,6 +55,7 @@ dependencies {
 
     // Jackson Modules
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 
     // Monitoring
     implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -80,6 +81,10 @@ tasks.withType<Test> {
 
 val outputDir = "${project.buildDir}/reports/ktlint/"
 val inputFiles = project.fileTree(mapOf("dir" to "src", "include" to "**/*.kt"))
+
+tasks.getByName<Jar>("jar") {
+    enabled = false
+}
 
 // Checking lint
 val ktlintCheck by tasks.creating(JavaExec::class) {
