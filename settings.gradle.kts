@@ -1,1 +1,1 @@
-rootProject.name = "schedule"
+rootProject.name = "v1-schedule-service"

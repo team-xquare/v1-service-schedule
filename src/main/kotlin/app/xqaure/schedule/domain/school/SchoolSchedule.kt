@@ -1,17 +1,19 @@
 package app.xqaure.schedule.domain.school
 
 import org.springframework.data.annotation.Id
-import java.time.LocalDateTime
+import java.time.LocalDate
 import java.util.UUID
 
 class SchoolSchedule(
-    id: UUID,
-    date: LocalDateTime,
+    date: LocalDate,
     name: String
 ) {
     @Id
-    private var id: UUID = id
+    val id: UUID = UUID.randomUUID()
 
-    private var date: LocalDateTime = date
-    private var name: String = name
+    var date: LocalDate = date
+        private set
+
+    var name: String = name
+        private set
 }

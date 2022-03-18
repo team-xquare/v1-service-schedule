@@ -27,7 +27,7 @@ dependencyManagement {
 
 group = "app.xqaure"
 version = "0.0.1-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_11
+java.sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
     mavenCentral()
@@ -44,11 +44,18 @@ dependencies {
     // Spring data r2dbc
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
 
+    // Mysql connector
+    implementation("dev.miku:r2dbc-mysql:${Libs.MYSQL_CONNECTOR_VERSION}")
+
+    // Spring Validation
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+
     // Spring Cloud AWS
     implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging")
 
     // Jackson Modules
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 
     // Monitoring
     implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -74,6 +81,10 @@ tasks.withType<Test> {
 
 val outputDir = "${project.buildDir}/reports/ktlint/"
 val inputFiles = project.fileTree(mapOf("dir" to "src", "include" to "**/*.kt"))
+
+tasks.getByName<Jar>("jar") {
+    enabled = false
+}
 
 // Checking lint
 val ktlintCheck by tasks.creating(JavaExec::class) {
