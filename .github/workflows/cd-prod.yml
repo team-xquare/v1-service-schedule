@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java-version: [ 15 ]
+        java-version: [ 17 ]
     outputs:
       version: ${{ steps.get_version.outputs.VERSION }}
     steps:
