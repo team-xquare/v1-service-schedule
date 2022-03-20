@@ -11,14 +11,6 @@ plugins {
     kotlin("plugin.spring") version "1.6.10"
 }
 
-dependencies {
-    ktlint("com.pinterest:ktlint:${Dependencies.KTLINT_VERSION}") {
-        attributes {
-            attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
-        }
-    }
-}
-
 dependencyManagement {
     imports {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:${Management.SPRING_CLOUD_VERSION}")
@@ -34,38 +26,19 @@ repositories {
 }
 
 dependencies {
-    // Spring Boot
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementationDependencies(Libs.SpringBoot)
+    implementationDependencies(Libs.SpringCloud)
+    implementationDependencies(Libs.Reactor)
+    implementationDependencies(Libs.Database)
+    implementationDependencies(Libs.Jackson)
+    implementationDependencies(Libs.Kotlin)
 
-    // Reactor
-    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
-
-    // Spring data r2dbc
-    implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
-
-    // Mysql connector
-    implementation("dev.miku:r2dbc-mysql:${Libs.MYSQL_CONNECTOR_VERSION}")
-
-    // Spring Validation
-    implementation("org.springframework.boot:spring-boot-starter-validation")
-
-    // Spring Cloud AWS
-    implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging")
-
-    // Jackson Modules
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
-
-    // Monitoring
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
-
-    // Kotlin Standard Library
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-
-    /* Test Libraries */
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    // Linting
+    ktlint(Dependencies.KTLINT) {
+        attributes {
+            attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
+        }
+    }
 }
 
 tasks.withType<KotlinCompile> {

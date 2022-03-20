@@ -4,16 +4,21 @@ import org.springframework.data.annotation.Id
 import java.time.LocalDate
 import java.util.UUID
 
+@Table(value = "tbl_school_schedule")
 class SchoolSchedule(
     date: LocalDate,
-    name: String
-) {
+    name: String,
+    @Transient private val isNew: Boolean = false
+) : Persistable<UUID> {
     @Id
-    val id: UUID = UUID.randomUUID()
+    private val id: UUID = UUID.randomUUID()
 
     var date: LocalDate = date
         private set
 
     var name: String = name
         private set
+
+    override fun getId(): UUID = id
+    override fun isNew(): Boolean = isNew
 }
