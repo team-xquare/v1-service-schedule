@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.apache.tools.ant.taskdefs.condition.Os
+import java.net.URI
 
 // For formatting
 val ktlint: Configuration by configurations.creating
@@ -18,7 +19,7 @@ dependencyManagement {
 }
 
 group = "app.xqaure"
-version = "0.0.1-SNAPSHOT"
+version = ""
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
