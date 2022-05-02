@@ -1,9 +1,9 @@
 package app.xqaure.schedule.domain.group
 
 import org.springframework.data.annotation.Id
+import org.springframework.data.annotation.Transient
 import org.springframework.data.domain.Persistable
 import org.springframework.data.relational.core.mapping.Table
-import org.springframework.data.annotation.Transient
 import java.util.UUID
 
 @Table(value = "tbl_schedule_group")

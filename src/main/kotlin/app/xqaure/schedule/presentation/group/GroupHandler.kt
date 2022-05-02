@@ -25,9 +25,8 @@ class GroupHandler(
         groupUsecase.createGroup(request)
 
     @PostMapping("/{groupId}")
-    suspend fun addMemberToGroup(@PathVariable groupId: UUID): ServerResponse {
-        TODO()
-    }
+    suspend fun addMemberToGroup(@PathVariable groupId: UUID) =
+        groupUsecase.addMemberToGroup()
 
     @DeleteMapping("/{scheduleId}/member/{userId}")
     suspend fun deleteMemberInGroup(@PathVariable scheduleId: UUID, @PathVariable userId: UUID): ServerResponse {
