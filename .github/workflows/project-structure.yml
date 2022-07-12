@@ -1,8 +1,6 @@
 name: Update Project Structure
 
-on:
-  push:
-    branches: [ "main" ]
+on: pull_request
 
 jobs:
   change-readme:
