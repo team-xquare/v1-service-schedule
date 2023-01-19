@@ -1,3 +1,45 @@
+server:
+  shutdown: graceful
+  servlet:
+    context-path: /schedules
+
 spring:
+  application:
+    name: v1-schedule-service
   profiles:
-    active: local # Default profile: local
+    active: ${PROFILE}
+  config:
+    import: optional:configserver:https://api.xquare.app/cloud-config/
+  cloud:
+    config:
+      username: ${CLOUD_CONFIG_USERNAME}
+      password: ${CLOUD_CONFIG_PASSWORD}
+
+  r2dbc:
+    url: r2dbc:mysql://${db.host}:${db.port}/${db.name}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Seoul&tlsVersion=TLSv1.2
+    username: ${db.username}
+    password: ${db.password}
+  sql:
+    init:
+      mode: always
+
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
+
+springdoc:
+  api-docs:
+    path: ${swagger.docs.path}
+  swagger-ui:
+    path: ${swagger.ui.path}
+    display-request-duration: true
+  cache:
+    disabled: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
