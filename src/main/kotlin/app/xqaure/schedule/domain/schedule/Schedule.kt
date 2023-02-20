@@ -1,33 +1,24 @@
 package app.xqaure.schedule.domain.schedule
 
 import org.springframework.data.annotation.Id
-import org.springframework.data.annotation.Transient
 import org.springframework.data.domain.Persistable
 import org.springframework.data.relational.core.mapping.Table
-import java.time.LocalDateTime
-import java.util.UUID
+import java.time.LocalDate
+import java.util.*
 
-@Table(value = "schedule")
+@Table(value = "tbl_schedule")
 class Schedule(
-    id: UUID,
-    date: LocalDateTime,
+    date: LocalDate,
     name: String,
-    period: Int,
-    scheduleId: UUID,
-    userId: UUID,
 
-    @Transient
-    private val isNew: Boolean = false
-) : Persistable<UUID> {
+    ) : Persistable<UUID> {
     @Id
-    private val id: UUID = id
+    private var id: UUID = UUID.randomUUID()
 
-    private var date: LocalDateTime = date
-    private var name: String = name
-    private var period: Int = period
-    private var scheduleId: UUID = scheduleId
-    private var userId: UUID = userId
+    var date: LocalDate = date
+
+    var name: String = name
 
     override fun getId(): UUID = id
-    override fun isNew(): Boolean = isNew
+    override fun isNew(): Boolean = true
 }

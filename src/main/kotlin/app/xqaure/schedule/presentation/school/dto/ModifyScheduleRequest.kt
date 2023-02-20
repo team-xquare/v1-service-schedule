@@ -7,8 +7,8 @@ import javax.validation.constraints.NotNull
 data class ModifyScheduleRequest(
 
     @field:NotEmpty(message = "{name.empty}")
-    val name: String?,
+    val name: String,
 
     @field:NotNull(message = "{date.null}")
-    val date: LocalDate?
+    val date: LocalDate
 )
