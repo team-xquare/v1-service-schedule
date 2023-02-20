@@ -1,3 +1,3 @@
 object Management {
-    const val SPRING_CLOUD_VERSION = "Hoxton.SR12"
+    const val SPRING_CLOUD_VERSION = "2021.0.1"
 }
