@@ -20,7 +20,7 @@ import javax.validation.Valid
 
 @RequestMapping("/school")
 @RestController
-class SchoolHandler(
+class SchoolScheduleHandler(
     private val schoolUsecase: SchoolUsecase
 ) {
 
