@@ -16,10 +16,11 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Isolation
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 @Service
-class SchoolUsecase(
+class SchoolScheduleUsecase(
     private val schoolScheduleRepository: SchoolScheduleRepository,
     private val scheduleRepository: ScheduleRepository,
     private val responseCreator: ResponseCreator
@@ -39,8 +40,6 @@ class SchoolUsecase(
                 date = date,
             )
         ).awaitSingleOrNull()
-
-        println(schoolSchedule?.id)
 
         return responseCreator.onSuccess(
             code = ADD_SCHEDULE_CODE,
@@ -90,8 +89,9 @@ class SchoolUsecase(
                 .filter { it.date.month.value == month }
                 .map {
                     ScheduleElement(
+                        id = it.id,
                         name = it.name,
-                        date = it.date.year.toString() + "-" + it.date.month.value + "-" + it.date.dayOfMonth,
+                        date = it.date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
                     )
                 }
                 .collectList().block() ?: throw SchoolScheduleNotFoundException()
@@ -102,8 +102,9 @@ class SchoolUsecase(
                 .filter { it.date.month.value == month }
                 .map {
                     ScheduleElement(
+                        id = it.id,
                         name = it.name,
-                        date = it.date.year.toString() + "-" + it.date.month.value + "-" + it.date.dayOfMonth,
+                        date = it.date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
                     )
                 }.collectList().block() ?: throw ScheduleNotFoundException()
         }

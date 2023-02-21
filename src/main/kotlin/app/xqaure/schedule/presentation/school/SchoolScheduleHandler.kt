@@ -1,6 +1,6 @@
 package app.xqaure.schedule.presentation.school
 
-import app.xqaure.schedule.application.school.SchoolUsecase
+import app.xqaure.schedule.application.school.SchoolScheduleUsecase
 import app.xqaure.schedule.presentation.school.dto.AddScheduleRequest
 import app.xqaure.schedule.presentation.school.dto.ModifyScheduleRequest
 import app.xqaure.schedule.presentation.school.dto.QueryScheduleListResponse
@@ -21,26 +21,26 @@ import javax.validation.Valid
 @RequestMapping("/school")
 @RestController
 class SchoolScheduleHandler(
-    private val schoolUsecase: SchoolUsecase
+    private val schoolScheduleUsecase: SchoolScheduleUsecase
 ) {
 
     @GetMapping
     suspend fun getSchedule(@RequestParam month: Int): QueryScheduleListResponse {
-        return schoolUsecase.querySchoolSchedule(month)
+        return schoolScheduleUsecase.querySchoolSchedule(month)
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     suspend fun addSchedule(@RequestBody @Valid request: AddScheduleRequest) =
-        schoolUsecase.createSchoolSchedule(name = request.name!!, date = request.date!!)
+        schoolScheduleUsecase.createSchoolSchedule(name = request.name!!, date = request.date!!)
 
     @PutMapping("/{schoolScheduleId}")
     suspend fun modifySchedule(
         @PathVariable schoolScheduleId: UUID,
         @RequestBody @Valid request: ModifyScheduleRequest
-    ) = schoolUsecase.modifySchoolSchedule(uuid = schoolScheduleId, name = request.name!!, date = request.date!!)
+    ) = schoolScheduleUsecase.modifySchoolSchedule(uuid = schoolScheduleId, name = request.name!!, date = request.date!!)
 
     @DeleteMapping("/{schoolScheduleId}")
     suspend fun deleteSchedule(@PathVariable schoolScheduleId: UUID) =
-        schoolUsecase.deleteSchoolSchedule(schoolScheduleId)
+        schoolScheduleUsecase.deleteSchoolSchedule(schoolScheduleId)
 }
