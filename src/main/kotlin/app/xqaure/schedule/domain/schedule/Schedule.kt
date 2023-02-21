@@ -11,7 +11,7 @@ class Schedule(
     date: LocalDate,
     name: String,
 
-    ) : Persistable<UUID> {
+) : Persistable<UUID> {
     @Id
     private var id: UUID = UUID.randomUUID()
 
