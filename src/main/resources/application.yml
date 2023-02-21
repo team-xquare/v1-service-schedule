@@ -14,7 +14,7 @@ spring:
   r2dbc:
     username: ${db.username}
     password: ${db.password}
-    url: r2dbc:mysql://${db.host}:${db.port}/${db.name}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Seoul
+    url: r2dbc:${db.dbms}://${db.host}:${db.port}/${db.name}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Seoul
 
   jackson:
     property-naming-strategy: SNAKE_CASE
