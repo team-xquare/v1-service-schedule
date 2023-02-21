@@ -25,9 +25,8 @@ class SchoolScheduleHandler(
 ) {
 
     @GetMapping
-    suspend fun getSchedule(@RequestParam month: Int): QueryScheduleListResponse {
-        return schoolScheduleUsecase.querySchoolSchedule(month)
-    }
+    suspend fun getSchedule(@RequestParam month: Int): QueryScheduleListResponse =
+        schoolScheduleUsecase.querySchoolSchedule(month)
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
