@@ -1,8 +1,8 @@
-package app.xqaure.schedule.application.school
+package app.xqaure.schedule.application.schedule
 
-import app.xqaure.schedule.application.school.exceptions.ScheduleNotFoundException
-import app.xqaure.schedule.domain.school.SchoolSchedule
-import app.xqaure.schedule.domain.school.SchoolScheduleRepository
+import app.xqaure.schedule.application.schedule.exceptions.ScheduleNotFoundException
+import app.xqaure.schedule.domain.schedule.Schedule
+import app.xqaure.schedule.domain.schedule.ScheduleRepository
 import app.xqaure.schedule.presentation.dto.BasicResponse
 import app.xqaure.schedule.presentation.dto.ResponseCreator
 import kotlinx.coroutines.reactor.awaitSingleOrNull
@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Isolation
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
-import java.util.UUID
+import java.util.*
 
 @Service
-class SchoolUsecase(
-    private val schoolScheduleRepository: SchoolScheduleRepository,
-    private val responseCreator: ResponseCreator
+class ScheduleUsecase(
+    private val scheduleRepository: ScheduleRepository,
+    private val responseCreator: ResponseCreator,
 ) {
 
     companion object {
@@ -26,49 +26,49 @@ class SchoolUsecase(
 
     suspend fun createSchedule(name: String, date: LocalDate): BasicResponse {
 
-        val schoolSchedule = schoolScheduleRepository.save(
-            SchoolSchedule(
+        val schedule = scheduleRepository.save(
+            Schedule(
                 name = name,
                 date = date,
-                isNew = true
             )
         ).awaitSingleOrNull()
 
         return responseCreator.onSuccess(
             code = ADD_SCHEDULE_CODE,
             propertyName = ADD_SCHEDULE_CODE,
-            schoolSchedule?.id
+            schedule?.id
         )
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
     suspend fun modifySchedule(uuid: UUID, name: String, date: LocalDate): BasicResponse {
 
-        val schoolSchedule = schoolScheduleRepository.findById(uuid)
+        val schedule = scheduleRepository.findById(uuid)
             .awaitSingleOrNull() ?: throw ScheduleNotFoundException()
 
-        schoolSchedule.name = name
+        schedule.name = name
+        schedule.date = date
 
         return responseCreator.onSuccess(
             code = MODIFY_SCHEDULE_CODE,
             propertyName = MODIFY_SCHEDULE_CODE,
-            schoolSchedule.id
+            uuid
         )
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
     suspend fun deleteSchedule(uuid: UUID): BasicResponse {
 
-        val schoolSchedule = schoolScheduleRepository.findById(uuid)
+        val schedule = scheduleRepository.findById(uuid)
             .awaitSingleOrNull() ?: throw ScheduleNotFoundException()
 
-        schoolScheduleRepository.delete(schoolSchedule)
+        scheduleRepository.delete(schedule)
             .awaitSingleOrNull()
 
         return responseCreator.onSuccess(
             code = DELETE_SCHEDULE_CODE,
             propertyName = DELETE_SCHEDULE_CODE,
-            schoolSchedule.id
+            uuid
         )
     }
 }

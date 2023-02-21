@@ -1,11 +1,8 @@
-server:
-  shutdown: graceful
-  servlet:
-    context-path: /schedules
-
 spring:
   application:
     name: v1-schedule-service
+  webflux:
+    base-path: /schedules
   profiles:
     active: ${PROFILE}
   config:
@@ -14,14 +11,10 @@ spring:
     config:
       username: ${CLOUD_CONFIG_USERNAME}
       password: ${CLOUD_CONFIG_PASSWORD}
-
   r2dbc:
-    url: r2dbc:mysql://${db.host}:${db.port}/${db.name}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Seoul&tlsVersion=TLSv1.2
     username: ${db.username}
     password: ${db.password}
-  sql:
-    init:
-      mode: always
+    url: r2dbc:${db.dbms}://${db.host}:${db.port}/${db.name}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Seoul
 
   jackson:
     property-naming-strategy: SNAKE_CASE
@@ -37,6 +30,13 @@ springdoc:
     display-request-duration: true
   cache:
     disabled: true
+
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
 
 ---
 spring:

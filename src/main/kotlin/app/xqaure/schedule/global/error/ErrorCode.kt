@@ -7,5 +7,7 @@ enum class ErrorCode(
     INTERNAL_SERVER_ERROR(500, "server.internal.error"),
 
     // Schedule domain error
-    SCHOOL_SCHEDULE_NOT_FOUND(404, "school.schedule.notfound.error")
+    SCHOOL_SCHEDULE_NOT_FOUND(404, "school.schedule.notfound.error"),
+
+    SCHEDULE_NOT_FOUND(404, "schedule.notfound.error")
 }
