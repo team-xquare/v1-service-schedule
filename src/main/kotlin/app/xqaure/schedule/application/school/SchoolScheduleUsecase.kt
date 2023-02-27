@@ -23,7 +23,7 @@ import java.util.*
 class SchoolScheduleUsecase(
     private val schoolScheduleRepository: SchoolScheduleRepository,
     private val scheduleRepository: ScheduleRepository,
-    private val responseCreator: ResponseCreator
+    private val responseCreator: ResponseCreator,
 ) {
 
     companion object {
@@ -80,7 +80,7 @@ class SchoolScheduleUsecase(
         )
     }
 
-    suspend fun querySchoolSchedule(month: Int): QueryScheduleListResponse {
+    suspend fun querySchoolSchedule(month: Int, userId: String): QueryScheduleListResponse {
 
         val students = mutableListOf<ScheduleElement>()
 
@@ -98,7 +98,7 @@ class SchoolScheduleUsecase(
         }
 
         val scheduleList = withContext(Dispatchers.IO) {
-            scheduleRepository.findAll()
+            scheduleRepository.findAllByUserId(userId)
                 .filter { it.date.month.value == month }
                 .map {
                     ScheduleElement(

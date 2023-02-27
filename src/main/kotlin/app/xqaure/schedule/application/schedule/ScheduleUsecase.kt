@@ -3,6 +3,7 @@ package app.xqaure.schedule.application.schedule
 import app.xqaure.schedule.application.schedule.exceptions.ScheduleNotFoundException
 import app.xqaure.schedule.domain.schedule.Schedule
 import app.xqaure.schedule.domain.schedule.ScheduleRepository
+import app.xqaure.schedule.global.exception.InvalidUserException
 import app.xqaure.schedule.presentation.dto.BasicResponse
 import app.xqaure.schedule.presentation.dto.ResponseCreator
 import kotlinx.coroutines.reactor.awaitSingleOrNull
@@ -24,12 +25,12 @@ class ScheduleUsecase(
         const val DELETE_SCHEDULE_CODE = "school.schedule.delete"
     }
 
-    suspend fun createSchedule(name: String, date: LocalDate): BasicResponse {
-
+    suspend fun createSchedule(name: String, date: LocalDate, userId: String): BasicResponse {
         val schedule = scheduleRepository.save(
             Schedule(
                 name = name,
                 date = date,
+                userId = userId,
             )
         ).awaitSingleOrNull()
 
@@ -41,10 +42,13 @@ class ScheduleUsecase(
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    suspend fun modifySchedule(uuid: UUID, name: String, date: LocalDate): BasicResponse {
-
+    suspend fun modifySchedule(uuid: UUID, name: String, date: LocalDate, userId: String): BasicResponse {
         val schedule = scheduleRepository.findById(uuid)
             .awaitSingleOrNull() ?: throw ScheduleNotFoundException()
+
+        if (schedule.userId != userId) {
+            throw InvalidUserException()
+        }
 
         schedule.name = name
         schedule.date = date
@@ -57,10 +61,13 @@ class ScheduleUsecase(
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    suspend fun deleteSchedule(uuid: UUID): BasicResponse {
-
+    suspend fun deleteSchedule(uuid: UUID, userId: String): BasicResponse {
         val schedule = scheduleRepository.findById(uuid)
             .awaitSingleOrNull() ?: throw ScheduleNotFoundException()
+
+        if (schedule.userId != userId) {
+            throw InvalidUserException()
+        }
 
         scheduleRepository.delete(schedule)
             .awaitSingleOrNull()
