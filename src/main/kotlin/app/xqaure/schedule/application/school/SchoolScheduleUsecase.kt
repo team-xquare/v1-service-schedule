@@ -2,14 +2,16 @@ package app.xqaure.schedule.application.school
 
 import app.xqaure.schedule.application.schedule.exceptions.ScheduleNotFoundException
 import app.xqaure.schedule.application.school.exceptions.SchoolScheduleNotFoundException
+import app.xqaure.schedule.domain.schedule.Schedule
 import app.xqaure.schedule.domain.schedule.ScheduleRepository
 import app.xqaure.schedule.domain.school.SchoolSchedule
 import app.xqaure.schedule.domain.school.SchoolScheduleRepository
 import app.xqaure.schedule.presentation.dto.BasicResponse
 import app.xqaure.schedule.presentation.dto.ResponseCreator
-import app.xqaure.schedule.presentation.school.dto.QueryScheduleListResponse
-import app.xqaure.schedule.presentation.school.dto.ScheduleElement
+import app.xqaure.schedule.presentation.schedule.dto.QueryScheduleListResponse
+import app.xqaure.schedule.presentation.schedule.dto.ScheduleElement
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import kotlinx.coroutines.withContext
 import org.springframework.stereotype.Service
@@ -48,14 +50,17 @@ class SchoolScheduleUsecase(
         )
     }
 
-    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Transactional
     suspend fun modifySchoolSchedule(uuid: UUID, name: String, date: LocalDate): BasicResponse {
+        schoolScheduleRepository.findById(uuid)
+            .flatMap {
+                it.name = name
+                it.date = date
+                schoolScheduleRepository.save(it)
+            }
+            .awaitSingleOrNull()
 
-        val schoolSchedule = schoolScheduleRepository.findById(uuid)
-            .awaitSingleOrNull() ?: throw SchoolScheduleNotFoundException()
-
-        schoolSchedule.name = name
-        schoolSchedule.date = date
+        deleteSchoolSchedule(uuid)
 
         return responseCreator.onSuccess(
             code = MODIFY_SCHEDULE_CODE,
@@ -66,12 +71,10 @@ class SchoolScheduleUsecase(
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
     suspend fun deleteSchoolSchedule(uuid: UUID): BasicResponse {
-
-        val schoolSchedule = schoolScheduleRepository.findById(uuid)
-            .awaitSingleOrNull() ?: throw SchoolScheduleNotFoundException()
-
-        schoolScheduleRepository.delete(schoolSchedule)
-            .awaitSingleOrNull()
+        schoolScheduleRepository.findById(uuid)
+            .flatMap {
+                schoolScheduleRepository.deleteById(uuid)
+            }.awaitFirstOrNull()
 
         return responseCreator.onSuccess(
             code = DELETE_SCHEDULE_CODE,
@@ -88,6 +91,7 @@ class SchoolScheduleUsecase(
             schoolScheduleRepository.findAll()
                 .filter { it.date.month.value == month }
                 .map {
+                    println(it.id)
                     ScheduleElement(
                         id = it.id,
                         name = it.name,
@@ -101,6 +105,7 @@ class SchoolScheduleUsecase(
             scheduleRepository.findAllByUserId(userId)
                 .filter { it.date.month.value == month }
                 .map {
+                    println(it.id)
                     ScheduleElement(
                         id = it.id,
                         name = it.name,

@@ -1,4 +1,4 @@
-package app.xqaure.schedule.presentation.school.dto
+package app.xqaure.schedule.presentation.schedule.dto
 
 import java.util.UUID
 

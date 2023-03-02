@@ -3,9 +3,9 @@ package app.xqaure.schedule.application.schedule
 import app.xqaure.schedule.application.schedule.exceptions.ScheduleNotFoundException
 import app.xqaure.schedule.domain.schedule.Schedule
 import app.xqaure.schedule.domain.schedule.ScheduleRepository
-import app.xqaure.schedule.global.exception.InvalidUserException
 import app.xqaure.schedule.presentation.dto.BasicResponse
 import app.xqaure.schedule.presentation.dto.ResponseCreator
+import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Isolation
@@ -41,17 +41,18 @@ class ScheduleUsecase(
         )
     }
 
-    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Transactional
     suspend fun modifySchedule(uuid: UUID, name: String, date: LocalDate, userId: String): BasicResponse {
-        val schedule = scheduleRepository.findById(uuid)
-            .awaitSingleOrNull() ?: throw ScheduleNotFoundException()
+        scheduleRepository.findById(uuid)
+            .filter { it.userId == userId }
+            .flatMap {
+                it.name = name
+                it.date = date
+                scheduleRepository.save(it)
+            }
+            .awaitSingleOrNull()
 
-        if (schedule.userId != userId) {
-            throw InvalidUserException()
-        }
-
-        schedule.name = name
-        schedule.date = date
+        deleteSchedule(uuid, userId)
 
         return responseCreator.onSuccess(
             code = MODIFY_SCHEDULE_CODE,
@@ -62,15 +63,10 @@ class ScheduleUsecase(
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
     suspend fun deleteSchedule(uuid: UUID, userId: String): BasicResponse {
-        val schedule = scheduleRepository.findById(uuid)
-            .awaitSingleOrNull() ?: throw ScheduleNotFoundException()
-
-        if (schedule.userId != userId) {
-            throw InvalidUserException()
-        }
-
-        scheduleRepository.delete(schedule)
-            .awaitSingleOrNull()
+        scheduleRepository.findById(uuid)
+            .flatMap {
+                scheduleRepository.deleteById(uuid)
+            }.awaitFirstOrNull()
 
         return responseCreator.onSuccess(
             code = DELETE_SCHEDULE_CODE,

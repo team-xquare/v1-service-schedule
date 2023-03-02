@@ -27,4 +27,8 @@ class Schedule(
 
     override fun getId(): UUID = id
     override fun isNew(): Boolean = true
+
+    fun getScheduleId(): UUID {
+        return this.id
+    }
 }

@@ -9,12 +9,16 @@ import org.springframework.web.reactive.function.server.coRouter
 class ScheduleRouter {
 
     @Bean
-    fun userBaseRouter(scheduleHandler: ScheduleHandler) = coRouter {
-        "/points".nest {
+    fun schoolScheduleRouter(scheduleHandler: ScheduleHandler) = coRouter {
+        "/schedules".nest {
             contentType(MediaType.APPLICATION_JSON)
-            POST("/schedule/mine", scheduleHandler::addSchedule)
-            PUT("/schedule/mine/{schedule-id}", scheduleHandler::modifySchedule)
-            DELETE("/schedule/mine/{schedule-id}", scheduleHandler::deleteSchedule)
+            GET("/school", scheduleHandler::getSchoolSchedule)
+            POST("/school", scheduleHandler::addSchoolSchedule)
+            PUT("/school/{school-schedule-uuid}", scheduleHandler::modifySchoolSchedule)
+            DELETE("/school/{school-schedule-uuid}", scheduleHandler::deleteSchoolSchedule)
+            POST("/mine", scheduleHandler::addSchedule)
+            PUT("/mine/{schedule-uuid}", scheduleHandler::modifySchedule)
+            DELETE("/mine/{schedule-uuid}", scheduleHandler::deleteSchedule)
         }
     }
 }

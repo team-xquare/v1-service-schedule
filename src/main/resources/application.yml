@@ -1,8 +1,6 @@
 spring:
   application:
     name: v1-schedule-service
-  webflux:
-    base-path: /schedules
   profiles:
     active: ${PROFILE}
   config:
