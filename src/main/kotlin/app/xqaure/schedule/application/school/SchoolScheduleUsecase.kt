@@ -2,7 +2,6 @@ package app.xqaure.schedule.application.school
 
 import app.xqaure.schedule.application.schedule.exceptions.ScheduleNotFoundException
 import app.xqaure.schedule.application.school.exceptions.SchoolScheduleNotFoundException
-import app.xqaure.schedule.domain.schedule.Schedule
 import app.xqaure.schedule.domain.schedule.ScheduleRepository
 import app.xqaure.schedule.domain.school.SchoolSchedule
 import app.xqaure.schedule.domain.school.SchoolScheduleRepository
@@ -91,7 +90,6 @@ class SchoolScheduleUsecase(
             schoolScheduleRepository.findAll()
                 .filter { it.date.month.value == month }
                 .map {
-                    println(it.id)
                     ScheduleElement(
                         id = it.id,
                         name = it.name,
@@ -105,7 +103,6 @@ class SchoolScheduleUsecase(
             scheduleRepository.findAllByUserId(userId)
                 .filter { it.date.month.value == month }
                 .map {
-                    println(it.id)
                     ScheduleElement(
                         id = it.id,
                         name = it.name,

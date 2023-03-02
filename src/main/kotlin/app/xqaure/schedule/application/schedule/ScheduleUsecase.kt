@@ -1,6 +1,5 @@
 package app.xqaure.schedule.application.schedule
 
-import app.xqaure.schedule.application.schedule.exceptions.ScheduleNotFoundException
 import app.xqaure.schedule.domain.schedule.Schedule
 import app.xqaure.schedule.domain.schedule.ScheduleRepository
 import app.xqaure.schedule.presentation.dto.BasicResponse

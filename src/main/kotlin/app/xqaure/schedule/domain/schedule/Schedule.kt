@@ -17,7 +17,7 @@ class Schedule(
     @field: Length(min = 36, max = 36)
     val userId: String,
 
-    ) : Persistable<UUID> {
+) : Persistable<UUID> {
     @Id
     private var id: UUID = UUID.randomUUID()
 
