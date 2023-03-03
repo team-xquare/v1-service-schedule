@@ -75,7 +75,7 @@ class SchoolScheduleUsecase(
         schoolScheduleRepository.findById(uuid)
             .flatMap {
                 schoolScheduleRepository.deleteById(uuid)
-            }.awaitFirstOrNull()
+            }.awaitSingleOrNull()
 
         return responseCreator.onSuccess(
             code = DELETE_SCHEDULE_CODE,
@@ -105,7 +105,6 @@ class SchoolScheduleUsecase(
             scheduleRepository.findAllByUserId(userId)
                 .filter { it.date.month.value == month }
                 .map {
-                    println(it.userId)
                     ScheduleElement(
                         id = it.id,
                         name = it.name,
