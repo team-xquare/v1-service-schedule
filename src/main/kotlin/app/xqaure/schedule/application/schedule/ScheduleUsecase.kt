@@ -1,16 +1,15 @@
 package app.xqaure.schedule.application.schedule
 
-import app.xqaure.schedule.application.schedule.exceptions.ScheduleNotFoundException
 import app.xqaure.schedule.domain.schedule.Schedule
 import app.xqaure.schedule.domain.schedule.ScheduleRepository
 import app.xqaure.schedule.presentation.dto.BasicResponse
 import app.xqaure.schedule.presentation.dto.ResponseCreator
+import kotlinx.coroutines.reactive.awaitSingleOrNull
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Isolation
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
-import java.util.*
 
 @Service
 class ScheduleUsecase(
@@ -24,12 +23,12 @@ class ScheduleUsecase(
         const val DELETE_SCHEDULE_CODE = "school.schedule.delete"
     }
 
-    suspend fun createSchedule(name: String, date: LocalDate): BasicResponse {
-
+    suspend fun createSchedule(name: String, date: LocalDate, userId: String): BasicResponse {
         val schedule = scheduleRepository.save(
             Schedule(
                 name = name,
                 date = date,
+                userId = userId,
             )
         ).awaitSingleOrNull()
 
@@ -40,14 +39,20 @@ class ScheduleUsecase(
         )
     }
 
-    @Transactional(isolation = Isolation.READ_COMMITTED)
-    suspend fun modifySchedule(uuid: UUID, name: String, date: LocalDate): BasicResponse {
+    @Transactional
+    suspend fun modifySchedule(uuid: String, name: String, date: LocalDate, userId: String): BasicResponse {
+        scheduleRepository.findScheduleByIdAndUserId(uuid, userId)
+            .flatMap {
+                scheduleRepository.save(
+                    Schedule(
+                        name = name,
+                        date = date,
+                        userId = userId
+                    )
+                )
+            }.awaitSingleOrNull()
 
-        val schedule = scheduleRepository.findById(uuid)
-            .awaitSingleOrNull() ?: throw ScheduleNotFoundException()
-
-        schedule.name = name
-        schedule.date = date
+        deleteSchedule(uuid, userId)
 
         return responseCreator.onSuccess(
             code = MODIFY_SCHEDULE_CODE,
@@ -57,13 +62,11 @@ class ScheduleUsecase(
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    suspend fun deleteSchedule(uuid: UUID): BasicResponse {
-
-        val schedule = scheduleRepository.findById(uuid)
-            .awaitSingleOrNull() ?: throw ScheduleNotFoundException()
-
-        scheduleRepository.delete(schedule)
-            .awaitSingleOrNull()
+    suspend fun deleteSchedule(uuid: String, userId: String): BasicResponse {
+        scheduleRepository.findScheduleByIdAndUserId(uuid, userId)
+            .flatMap {
+                scheduleRepository.deleteById(uuid)
+            }.awaitSingleOrNull()
 
         return responseCreator.onSuccess(
             code = DELETE_SCHEDULE_CODE,

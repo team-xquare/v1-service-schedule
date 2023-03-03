@@ -9,5 +9,9 @@ enum class ErrorCode(
     // Schedule domain error
     SCHOOL_SCHEDULE_NOT_FOUND(404, "school.schedule.notfound.error"),
 
-    SCHEDULE_NOT_FOUND(404, "schedule.notfound.error")
+    SCHEDULE_NOT_FOUND(404, "schedule.notfound.error"),
+
+    INVALID_USER(401, "user.invalid.error"),
+
+    UNAUTHORIZED(401, "user.unauthorized.error"),
 }
