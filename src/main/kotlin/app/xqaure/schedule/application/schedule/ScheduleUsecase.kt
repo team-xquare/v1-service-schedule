@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Isolation
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
-import java.util.*
 
 @Service
 class ScheduleUsecase(
@@ -41,13 +40,17 @@ class ScheduleUsecase(
     }
 
     @Transactional
-    suspend fun modifySchedule(uuid: UUID, name: String, date: LocalDate, userId: String): BasicResponse {
+    suspend fun modifySchedule(uuid: String, name: String, date: LocalDate, userId: String): BasicResponse {
         scheduleRepository.findById(uuid)
             .filter { it.userId == userId }
             .flatMap {
-                it.name = name
-                it.date = date
-                scheduleRepository.save(it)
+                scheduleRepository.save(
+                    Schedule(
+                        name = name,
+                        date = date,
+                        userId = userId
+                    )
+                )
             }
             .awaitSingleOrNull()
 
@@ -61,7 +64,7 @@ class ScheduleUsecase(
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    suspend fun deleteSchedule(uuid: UUID, userId: String): BasicResponse {
+    suspend fun deleteSchedule(uuid: String, userId: String): BasicResponse {
         scheduleRepository.findById(uuid)
             .flatMap {
                 scheduleRepository.deleteById(uuid)

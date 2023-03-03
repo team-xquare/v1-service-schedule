@@ -10,14 +10,14 @@ import java.util.*
 class SchoolSchedule(
     date: LocalDate,
     name: String,
-) : Persistable<UUID> {
+) : Persistable<String> {
     @Id
-    private var id: UUID = UUID.randomUUID()
+    private var id: String = UUID.randomUUID().toString()
 
     var date: LocalDate = date
 
     var name: String = name
 
-    override fun getId(): UUID = id
+    override fun getId(): String = id
     override fun isNew(): Boolean = true
 }

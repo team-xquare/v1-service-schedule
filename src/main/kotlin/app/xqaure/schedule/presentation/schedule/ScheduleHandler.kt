@@ -44,7 +44,7 @@ class ScheduleHandler(
         val schoolScheduleId = serverRequest.pathVariable("school-schedule-uuid")
         val request = serverRequest.getModifyScheduleRequestBody()
         schoolScheduleUsecase.modifySchoolSchedule(
-            uuid = UUID.fromString(schoolScheduleId),
+            uuid = schoolScheduleId,
             name = request.name,
             date = request.date
         )
@@ -54,7 +54,7 @@ class ScheduleHandler(
 
     suspend fun deleteSchoolSchedule(serverRequest: ServerRequest): ServerResponse {
         val schoolScheduleId = serverRequest.pathVariable("school-schedule-uuid")
-        schoolScheduleUsecase.deleteSchoolSchedule(uuid = UUID.fromString(schoolScheduleId))
+        schoolScheduleUsecase.deleteSchoolSchedule(schoolScheduleId)
 
         return ServerResponse.noContent().buildAndAwait()
     }
@@ -80,7 +80,7 @@ class ScheduleHandler(
         val request = serverRequest.getModifyScheduleRequestBody()
 
         scheduleUsecase.modifySchedule(
-            uuid = UUID.fromString(scheduleId),
+            uuid = scheduleId,
             name = request.name,
             date = request.date,
             userId = userId
@@ -94,7 +94,7 @@ class ScheduleHandler(
         val userId = serverRequest.headers().firstHeader("Request-User-Id")
             ?: throw UnAuthorizedException()
 
-        scheduleUsecase.deleteSchedule(uuid = UUID.fromString(scheduleId), userId = userId)
+        scheduleUsecase.deleteSchedule(uuid = scheduleId, userId = userId)
 
         return ServerResponse.noContent().buildAndAwait()
     }

@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Isolation
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.*
 
 @Service
 class SchoolScheduleUsecase(
@@ -50,12 +49,15 @@ class SchoolScheduleUsecase(
     }
 
     @Transactional
-    suspend fun modifySchoolSchedule(uuid: UUID, name: String, date: LocalDate): BasicResponse {
+    suspend fun modifySchoolSchedule(uuid: String, name: String, date: LocalDate): BasicResponse {
         schoolScheduleRepository.findById(uuid)
             .flatMap {
-                it.name = name
-                it.date = date
-                schoolScheduleRepository.save(it)
+                schoolScheduleRepository.save(
+                    SchoolSchedule(
+                        name = name,
+                        date = date,
+                    )
+                )
             }
             .awaitSingleOrNull()
 
@@ -69,7 +71,7 @@ class SchoolScheduleUsecase(
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    suspend fun deleteSchoolSchedule(uuid: UUID): BasicResponse {
+    suspend fun deleteSchoolSchedule(uuid: String): BasicResponse {
         schoolScheduleRepository.findById(uuid)
             .flatMap {
                 schoolScheduleRepository.deleteById(uuid)
@@ -103,6 +105,7 @@ class SchoolScheduleUsecase(
             scheduleRepository.findAllByUserId(userId)
                 .filter { it.date.month.value == month }
                 .map {
+                    println(it.userId)
                     ScheduleElement(
                         id = it.id,
                         name = it.name,
