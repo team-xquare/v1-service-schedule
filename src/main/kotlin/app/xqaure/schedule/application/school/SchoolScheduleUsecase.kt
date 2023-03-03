@@ -10,7 +10,6 @@ import app.xqaure.schedule.presentation.dto.ResponseCreator
 import app.xqaure.schedule.presentation.schedule.dto.QueryScheduleListResponse
 import app.xqaure.schedule.presentation.schedule.dto.ScheduleElement
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import kotlinx.coroutines.withContext
 import org.springframework.stereotype.Service

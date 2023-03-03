@@ -4,7 +4,6 @@ import app.xqaure.schedule.domain.schedule.Schedule
 import app.xqaure.schedule.domain.schedule.ScheduleRepository
 import app.xqaure.schedule.presentation.dto.BasicResponse
 import app.xqaure.schedule.presentation.dto.ResponseCreator
-import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.reactive.awaitSingleOrNull
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import org.springframework.stereotype.Service
