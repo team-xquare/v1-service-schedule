@@ -17,7 +17,7 @@ class Schedule(
     @field: Length(min = 36, max = 36)
     var userId: String,
 
-    ) : Persistable<String> {
+) : Persistable<String> {
 
     @Id
     private var id: String = UUID.randomUUID().toString()

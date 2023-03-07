@@ -10,7 +10,6 @@ enum class ErrorCode(
 
     REQUEST_HANDLER_NOT_FOUND(404, "server.request.handler.not.found"),
 
-
     // Schedule domain error
     SCHOOL_SCHEDULE_NOT_FOUND(404, "school.schedule.notfound.error"),
 
