@@ -26,8 +26,8 @@ class ResponseCreator(
         vararg args: Any?
     ): ErrorResponse {
         return ErrorResponse(
-            code = code,
-            message = listOf(messageSource.getMessage(propertyName, args, LocaleContextHolder.getLocale()))
+            responseStatus = code,
+            errorMessage = messageSource.getMessage(propertyName, args, LocaleContextHolder.getLocale())
         )
     }
 }

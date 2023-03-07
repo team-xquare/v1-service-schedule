@@ -6,12 +6,15 @@ import app.xqaure.schedule.global.exception.UnAuthorizedException
 import app.xqaure.schedule.presentation.schedule.dto.AddScheduleRequest
 import app.xqaure.schedule.presentation.schedule.dto.ModifyScheduleRequest
 import kotlinx.coroutines.reactor.awaitSingle
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
+import org.springframework.web.reactive.function.server.body
 import org.springframework.web.reactive.function.server.bodyToMono
 import org.springframework.web.reactive.function.server.bodyValueAndAwait
 import org.springframework.web.reactive.function.server.buildAndAwait
+import reactor.core.publisher.Mono
 import java.net.URI
 import java.util.*
 
@@ -33,9 +36,9 @@ class ScheduleHandler(
     suspend fun addSchoolSchedule(serverRequest: ServerRequest): ServerResponse {
         val request = serverRequest.getAddScheduleRequestBody()
 
-        schoolScheduleUsecase.createSchoolSchedule(name = request.name!!, date = request.date!!)
+        val response = schoolScheduleUsecase.createSchoolSchedule(name = request.name!!, date = request.date!!)
 
-        return ServerResponse.created(URI("schedules/school")).buildAndAwait()
+        return ServerResponse.created(URI("schedules/school")).bodyValueAndAwait(response)
     }
 
     suspend fun modifySchoolSchedule(
@@ -43,20 +46,20 @@ class ScheduleHandler(
     ): ServerResponse {
         val schoolScheduleId = serverRequest.pathVariable("school-schedule-uuid")
         val request = serverRequest.getModifyScheduleRequestBody()
-        schoolScheduleUsecase.modifySchoolSchedule(
+        val response = schoolScheduleUsecase.modifySchoolSchedule(
             uuid = schoolScheduleId,
             name = request.name,
             date = request.date
         )
 
-        return ServerResponse.noContent().buildAndAwait()
+        return ServerResponse.status(HttpStatus.NO_CONTENT).bodyValueAndAwait(response)
     }
 
     suspend fun deleteSchoolSchedule(serverRequest: ServerRequest): ServerResponse {
         val schoolScheduleId = serverRequest.pathVariable("school-schedule-uuid")
-        schoolScheduleUsecase.deleteSchoolSchedule(schoolScheduleId)
+        val response = schoolScheduleUsecase.deleteSchoolSchedule(schoolScheduleId)
 
-        return ServerResponse.noContent().buildAndAwait()
+        return ServerResponse.status(HttpStatus.NO_CONTENT).bodyValueAndAwait(response)
     }
 
     suspend fun addSchedule(
@@ -66,27 +69,24 @@ class ScheduleHandler(
             ?: throw UnAuthorizedException()
         val request = serverRequest.getAddScheduleRequestBody()
 
-        scheduleUsecase.createSchedule(name = request.name!!, date = request.date!!, userId = userId)
+        val response = scheduleUsecase.createSchedule(name = request.name!!, date = request.date!!, userId = userId)
 
-        return ServerResponse.created(URI("/schedules/mine")).buildAndAwait()
+        return ServerResponse.created(URI("/schedules/mine")).bodyValueAndAwait(response)
     }
 
     suspend fun modifySchedule(
         serverRequest: ServerRequest,
     ): ServerResponse {
         val scheduleId = serverRequest.pathVariable("schedule-uuid")
-        val userId = serverRequest.headers().firstHeader("Request-User-Id")
-            ?: throw UnAuthorizedException()
         val request = serverRequest.getModifyScheduleRequestBody()
 
-        scheduleUsecase.modifySchedule(
+        val response = scheduleUsecase.modifySchedule(
             uuid = scheduleId,
             name = request.name,
             date = request.date,
-            userId = userId
         )
 
-        return ServerResponse.noContent().buildAndAwait()
+        return ServerResponse.status(HttpStatus.NO_CONTENT).bodyValueAndAwait(response)
     }
 
     suspend fun deleteSchedule(serverRequest: ServerRequest): ServerResponse {
@@ -94,9 +94,9 @@ class ScheduleHandler(
         val userId = serverRequest.headers().firstHeader("Request-User-Id")
             ?: throw UnAuthorizedException()
 
-        scheduleUsecase.deleteSchedule(uuid = scheduleId, userId = userId)
+        val response = scheduleUsecase.deleteSchedule(uuid = scheduleId, userId = userId)
 
-        return ServerResponse.noContent().buildAndAwait()
+        return ServerResponse.status(HttpStatus.NO_CONTENT).bodyValueAndAwait(response)
     }
 
     private suspend fun ServerRequest.getAddScheduleRequestBody() =

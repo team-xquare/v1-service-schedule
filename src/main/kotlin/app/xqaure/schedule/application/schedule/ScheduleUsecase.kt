@@ -4,7 +4,6 @@ import app.xqaure.schedule.domain.schedule.Schedule
 import app.xqaure.schedule.domain.schedule.ScheduleRepository
 import app.xqaure.schedule.presentation.dto.BasicResponse
 import app.xqaure.schedule.presentation.dto.ResponseCreator
-import kotlinx.coroutines.reactive.awaitSingleOrNull
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Isolation
@@ -40,20 +39,8 @@ class ScheduleUsecase(
     }
 
     @Transactional
-    suspend fun modifySchedule(uuid: String, name: String, date: LocalDate, userId: String): BasicResponse {
-        scheduleRepository.findScheduleByIdAndUserId(uuid, userId)
-            .flatMap {
-                scheduleRepository.save(
-                    Schedule(
-                        name = name,
-                        date = date,
-                        userId = userId
-                    )
-                )
-            }.awaitSingleOrNull()
-
-        deleteSchedule(uuid, userId)
-
+    suspend fun modifySchedule(uuid: String, name: String, date: LocalDate): BasicResponse {
+        scheduleRepository.updateSchedule(uuid, name, date)
         return responseCreator.onSuccess(
             code = MODIFY_SCHEDULE_CODE,
             propertyName = MODIFY_SCHEDULE_CODE,
