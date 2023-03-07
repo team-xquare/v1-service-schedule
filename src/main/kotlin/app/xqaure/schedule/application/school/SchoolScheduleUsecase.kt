@@ -10,6 +10,7 @@ import app.xqaure.schedule.presentation.dto.ResponseCreator
 import app.xqaure.schedule.presentation.schedule.dto.QueryScheduleListResponse
 import app.xqaure.schedule.presentation.schedule.dto.ScheduleElement
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.reactive.awaitSingle
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import kotlinx.coroutines.withContext
 import org.springframework.stereotype.Service
@@ -49,18 +50,9 @@ class SchoolScheduleUsecase(
 
     @Transactional
     suspend fun modifySchoolSchedule(uuid: String, name: String, date: LocalDate): BasicResponse {
-        schoolScheduleRepository.findById(uuid)
-            .flatMap {
-                schoolScheduleRepository.save(
-                    SchoolSchedule(
-                        name = name,
-                        date = date,
-                    )
-                )
-            }
-            .awaitSingleOrNull()
-
-        deleteSchoolSchedule(uuid)
+        if (schoolScheduleRepository.updateSchoolSchedule(uuid, name, date) < 0) {
+            throw SchoolScheduleNotFoundException()
+        }
 
         return responseCreator.onSuccess(
             code = MODIFY_SCHEDULE_CODE,
@@ -74,7 +66,7 @@ class SchoolScheduleUsecase(
         schoolScheduleRepository.findById(uuid)
             .flatMap {
                 schoolScheduleRepository.deleteById(uuid)
-            }.awaitSingleOrNull()
+            }.awaitSingle() ?: throw ScheduleNotFoundException()
 
         return responseCreator.onSuccess(
             code = DELETE_SCHEDULE_CODE,
@@ -109,7 +101,7 @@ class SchoolScheduleUsecase(
                         name = it.name,
                         date = it.date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
                     )
-                }.collectList().block() ?: throw ScheduleNotFoundException()
+                }.collectList().block() ?: throw SchoolScheduleNotFoundException()
         }
 
         students.addAll(schoolScheduleList)

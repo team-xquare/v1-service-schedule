@@ -15,9 +15,10 @@ class Schedule(
 
     @field: NotNull
     @field: Length(min = 36, max = 36)
-    val userId: String,
+    var userId: String,
 
 ) : Persistable<String> {
+
     @Id
     private var id: String = UUID.randomUUID().toString()
 
@@ -27,4 +28,12 @@ class Schedule(
 
     override fun getId(): String = id
     override fun isNew(): Boolean = true
+
+    fun setSchedule(id: String, date: LocalDate, name: String, userId: String): Schedule {
+        this.id = id
+        this.date = date
+        this.name = name
+        this.userId = userId
+        return this
+    }
 }
