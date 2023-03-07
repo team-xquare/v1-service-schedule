@@ -1,5 +1,6 @@
 package app.xqaure.schedule.application.schedule
 
+import app.xqaure.schedule.application.schedule.exceptions.ScheduleNotFoundException
 import app.xqaure.schedule.domain.schedule.Schedule
 import app.xqaure.schedule.domain.schedule.ScheduleRepository
 import app.xqaure.schedule.presentation.dto.BasicResponse
@@ -40,7 +41,9 @@ class ScheduleUsecase(
 
     @Transactional
     suspend fun modifySchedule(uuid: String, name: String, date: LocalDate): BasicResponse {
-        scheduleRepository.updateSchedule(uuid, name, date)
+        if (scheduleRepository.updateSchedule(uuid, name, date) < 1) {
+            throw ScheduleNotFoundException()
+        }
         return responseCreator.onSuccess(
             code = MODIFY_SCHEDULE_CODE,
             propertyName = MODIFY_SCHEDULE_CODE,

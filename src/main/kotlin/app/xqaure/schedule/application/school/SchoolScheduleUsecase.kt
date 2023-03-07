@@ -50,7 +50,10 @@ class SchoolScheduleUsecase(
 
     @Transactional
     suspend fun modifySchoolSchedule(uuid: String, name: String, date: LocalDate): BasicResponse {
-        schoolScheduleRepository.updateSchoolSchedule(uuid, name, date)
+        if (schoolScheduleRepository.updateSchoolSchedule(uuid, name, date) < 1) {
+            throw SchoolScheduleNotFoundException()
+        }
+
         return responseCreator.onSuccess(
             code = MODIFY_SCHEDULE_CODE,
             propertyName = MODIFY_SCHEDULE_CODE,
