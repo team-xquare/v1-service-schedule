@@ -61,8 +61,8 @@ class ScheduleUsecase(
                 }.awaitSingleOrNull() ?: throw ScheduleNotFoundException()
         }.onFailure {
             return responseCreator.onSuccess(
-                code = ErrorCode.SCHEDULE_NOT_FOUND.code,
-                propertyName = ErrorCode.SCHEDULE_NOT_FOUND.name,
+                code = DELETE_SCHEDULE_CODE,
+                propertyName = DELETE_SCHEDULE_CODE,
                 uuid
             )
         }
