@@ -56,7 +56,7 @@ class ScheduleUsecase(
         scheduleRepository.findScheduleByIdAndUserId(uuid, userId)
             .flatMap {
                 scheduleRepository.deleteById(uuid)
-            }.awaitSingleOrNull()
+            }.awaitSingleOrNull() ?: throw ScheduleNotFoundException()
 
         return responseCreator.onSuccess(
             code = DELETE_SCHEDULE_CODE,
