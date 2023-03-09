@@ -3,7 +3,6 @@ package app.xqaure.schedule.application.schedule
 import app.xqaure.schedule.application.schedule.exceptions.ScheduleNotFoundException
 import app.xqaure.schedule.domain.schedule.Schedule
 import app.xqaure.schedule.domain.schedule.ScheduleRepository
-import app.xqaure.schedule.global.error.ErrorCode
 import app.xqaure.schedule.presentation.dto.BasicResponse
 import app.xqaure.schedule.presentation.dto.ResponseCreator
 import kotlinx.coroutines.reactor.awaitSingleOrNull
@@ -54,18 +53,12 @@ class ScheduleUsecase(
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
     suspend fun deleteSchedule(uuid: String, userId: String): BasicResponse {
-        runCatching {
-            scheduleRepository.findScheduleByIdAndUserId(uuid, userId)
-                .flatMap {
-                    scheduleRepository.deleteById(uuid)
-                }.awaitSingleOrNull() ?: throw ScheduleNotFoundException()
-        }.onFailure {
-            return responseCreator.onSuccess(
-                code = DELETE_SCHEDULE_CODE,
-                propertyName = DELETE_SCHEDULE_CODE,
-                uuid
-            )
-        }
+        val schedule = scheduleRepository.findScheduleByIdAndUserId(uuid, userId)
+            .awaitSingleOrNull() ?: throw ScheduleNotFoundException()
+
+        scheduleRepository.delete(schedule)
+            .awaitSingleOrNull()
+
         return responseCreator.onSuccess(
             code = DELETE_SCHEDULE_CODE,
             propertyName = DELETE_SCHEDULE_CODE,

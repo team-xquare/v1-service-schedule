@@ -10,7 +10,6 @@ import app.xqaure.schedule.presentation.dto.ResponseCreator
 import app.xqaure.schedule.presentation.schedule.dto.QueryScheduleListResponse
 import app.xqaure.schedule.presentation.schedule.dto.ScheduleElement
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.reactive.awaitSingle
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import kotlinx.coroutines.withContext
 import org.springframework.stereotype.Service
@@ -63,10 +62,11 @@ class SchoolScheduleUsecase(
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
     suspend fun deleteSchoolSchedule(uuid: String): BasicResponse {
-        schoolScheduleRepository.findById(uuid)
-            .flatMap {
-                schoolScheduleRepository.deleteById(uuid)
-            }.awaitSingle() ?: throw ScheduleNotFoundException()
+        val schoolSchedule = schoolScheduleRepository.findById(uuid)
+            .awaitSingleOrNull() ?: throw ScheduleNotFoundException()
+
+        schoolScheduleRepository.delete(schoolSchedule)
+            .awaitSingleOrNull()
 
         return responseCreator.onSuccess(
             code = DELETE_SCHEDULE_CODE,
