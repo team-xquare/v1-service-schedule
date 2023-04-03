@@ -22,10 +22,9 @@ class ScheduleHandler(
 ) {
 
     suspend fun getSchoolSchedule(serverRequest: ServerRequest): ServerResponse {
-        val nowMonth = LocalDate.now().monthValue
         val userId = serverRequest.headers().firstHeader("Request-User-Id")
             ?: throw UnAuthorizedException()
-        val month = serverRequest.queryParam("month").orElse(nowMonth.toString())
+        val month = serverRequest.queryParam("month").orElse(LocalDate.now().monthValue.toString())
         val response = schoolScheduleUsecase.querySchoolSchedule(month = month.toInt(), userId = userId)
 
         return ServerResponse.ok().bodyValueAndAwait(response)
