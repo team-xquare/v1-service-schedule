@@ -13,7 +13,7 @@ import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.bodyToMono
 import org.springframework.web.reactive.function.server.bodyValueAndAwait
 import java.net.URI
-import java.util.*
+import java.time.LocalDate
 
 @Component
 class ScheduleHandler(
@@ -24,7 +24,7 @@ class ScheduleHandler(
     suspend fun getSchoolSchedule(serverRequest: ServerRequest): ServerResponse {
         val userId = serverRequest.headers().firstHeader("Request-User-Id")
             ?: throw UnAuthorizedException()
-        val month = serverRequest.queryParam("month").orElse("")
+        val month = serverRequest.queryParam("month").orElse(LocalDate.now().monthValue.toString())
         val response = schoolScheduleUsecase.querySchoolSchedule(month = month.toInt(), userId = userId)
 
         return ServerResponse.ok().bodyValueAndAwait(response)
