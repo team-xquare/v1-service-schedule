@@ -7,6 +7,7 @@ import app.xqaure.schedule.domain.school.SchoolSchedule
 import app.xqaure.schedule.domain.school.SchoolScheduleRepository
 import app.xqaure.schedule.presentation.dto.BasicResponse
 import app.xqaure.schedule.presentation.dto.ResponseCreator
+import app.xqaure.schedule.presentation.schedule.dto.QueryIsHomecomingDayResponse
 import app.xqaure.schedule.presentation.schedule.dto.QueryScheduleListResponse
 import app.xqaure.schedule.presentation.schedule.dto.ScheduleElement
 import kotlinx.coroutines.Dispatchers
@@ -109,5 +110,11 @@ class SchoolScheduleUsecase(
         students.sortBy { it.date }
 
         return QueryScheduleListResponse(students)
+    }
+
+    suspend fun queryIsHomecomingDay(date: LocalDate): QueryIsHomecomingDayResponse {
+        val schoolSchedule = schoolScheduleRepository.findSchoolScheduleByDate(date)
+
+        return QueryIsHomecomingDayResponse(schoolSchedule?.name == "의무귀가")
     }
 }

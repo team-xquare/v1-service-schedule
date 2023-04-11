@@ -101,4 +101,13 @@ class ScheduleHandler(
 
     private suspend fun ServerRequest.getModifyScheduleRequestBody() =
         this.bodyToMono<ModifyScheduleRequest>().awaitSingle()
+
+    suspend fun getIsHomecomingDay(serverRequest: ServerRequest): ServerResponse {
+        val dateStr = serverRequest.queryParam("date").orElse(LocalDate.now().toString())
+        val date = LocalDate.parse(dateStr)
+
+        val response = schoolScheduleUsecase.queryIsHomecomingDay(date)
+
+        return ServerResponse.ok().bodyValueAndAwait(response)
+    }
 }
