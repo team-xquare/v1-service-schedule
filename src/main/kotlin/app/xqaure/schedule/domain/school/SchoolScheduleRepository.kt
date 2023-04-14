@@ -12,5 +12,5 @@ interface SchoolScheduleRepository : ReactiveCrudRepository<SchoolSchedule, Stri
     @Query("UPDATE tbl_school_schedule SET name = :name, date = :date WHERE id = :id")
     fun updateSchoolSchedule(id: String, name: String, date: LocalDate): Int
 
-    fun findByDate(date: LocalDate): Mono<SchoolSchedule>?
+    fun findByDate(date: LocalDate): Mono<SchoolSchedule>
 }
