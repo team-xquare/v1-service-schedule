@@ -113,8 +113,12 @@ class SchoolScheduleUsecase(
     }
 
     suspend fun queryIsHomecomingDay(date: LocalDate): QueryIsHomecomingDayResponse {
-        val schoolSchedule = schoolScheduleRepository.findSchoolScheduleByDate(date)
+        val schoolSchedule = schoolScheduleRepository.findByDate(date)
+            ?.map { schedule ->
+                schedule.name == "의무귀가"
+            }?.awaitSingleOrNull()
+            ?: false
 
-        return QueryIsHomecomingDayResponse(schoolSchedule?.name == "의무귀가")
+        return QueryIsHomecomingDayResponse(schoolSchedule)
     }
 }
