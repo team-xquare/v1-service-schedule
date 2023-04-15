@@ -11,11 +11,13 @@ import app.xqaure.schedule.presentation.schedule.dto.QueryIsHomecomingDayRespons
 import app.xqaure.schedule.presentation.schedule.dto.QueryScheduleListResponse
 import app.xqaure.schedule.presentation.schedule.dto.ScheduleElement
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import kotlinx.coroutines.withContext
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Isolation
 import org.springframework.transaction.annotation.Transactional
+import reactor.core.publisher.Flux
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -42,9 +44,7 @@ class SchoolScheduleUsecase(
         ).awaitSingleOrNull()
 
         return responseCreator.onSuccess(
-            code = ADD_SCHEDULE_CODE,
-            propertyName = ADD_SCHEDULE_CODE,
-            schoolSchedule?.id
+            code = ADD_SCHEDULE_CODE, propertyName = ADD_SCHEDULE_CODE, schoolSchedule?.id
         )
     }
 
@@ -55,24 +55,19 @@ class SchoolScheduleUsecase(
         }
 
         return responseCreator.onSuccess(
-            code = MODIFY_SCHEDULE_CODE,
-            propertyName = MODIFY_SCHEDULE_CODE,
-            uuid
+            code = MODIFY_SCHEDULE_CODE, propertyName = MODIFY_SCHEDULE_CODE, uuid
         )
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
     suspend fun deleteSchoolSchedule(uuid: String): BasicResponse {
-        val schoolSchedule = schoolScheduleRepository.findById(uuid)
-            .awaitSingleOrNull() ?: throw ScheduleNotFoundException()
+        val schoolSchedule =
+            schoolScheduleRepository.findById(uuid).awaitSingleOrNull() ?: throw ScheduleNotFoundException()
 
-        schoolScheduleRepository.delete(schoolSchedule)
-            .awaitSingleOrNull()
+        schoolScheduleRepository.delete(schoolSchedule).awaitSingleOrNull()
 
         return responseCreator.onSuccess(
-            code = DELETE_SCHEDULE_CODE,
-            propertyName = DELETE_SCHEDULE_CODE,
-            uuid
+            code = DELETE_SCHEDULE_CODE, propertyName = DELETE_SCHEDULE_CODE, uuid
         )
     }
 
@@ -81,22 +76,17 @@ class SchoolScheduleUsecase(
         val students = mutableListOf<ScheduleElement>()
 
         val schoolScheduleList = withContext(Dispatchers.IO) {
-            schoolScheduleRepository.findAll()
-                .filter { it.date.month.value == month }
-                .map {
+            schoolScheduleRepository.findAll().filter { it.date.month.value == month }.map {
                     ScheduleElement(
                         id = it.id,
                         name = it.name,
                         date = it.date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
                     )
-                }
-                .collectList().block() ?: throw SchoolScheduleNotFoundException()
+                }.collectList().block() ?: throw SchoolScheduleNotFoundException()
         }
 
         val scheduleList = withContext(Dispatchers.IO) {
-            scheduleRepository.findAllByUserId(userId)
-                .filter { it.date.month.value == month }
-                .map {
+            scheduleRepository.findAllByUserId(userId).filter { it.date.month.value == month }.map {
                     ScheduleElement(
                         id = it.id,
                         name = it.name,
@@ -113,11 +103,10 @@ class SchoolScheduleUsecase(
     }
 
     suspend fun queryIsHomecomingDay(date: LocalDate): QueryIsHomecomingDayResponse {
-        val schoolSchedule = schoolScheduleRepository.findByDate(date)
-            .map { schedule ->
-                schedule.name == "의무귀가"
-            }.defaultIfEmpty(false)
-            .awaitSingleOrNull()
+        val schoolSchedule = schoolScheduleRepository.findAllByDate(date)
+            .flatMap {
+                Flux.just(it.name == "의무귀가")
+            }.awaitFirstOrNull()
             ?: false
 
         return QueryIsHomecomingDayResponse(schoolSchedule)
