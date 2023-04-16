@@ -77,22 +77,22 @@ class SchoolScheduleUsecase(
 
         val schoolScheduleList = withContext(Dispatchers.IO) {
             schoolScheduleRepository.findAll().filter { it.date.month.value == month }.map {
-                    ScheduleElement(
-                        id = it.id,
-                        name = it.name,
-                        date = it.date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
-                    )
-                }.collectList().block() ?: throw SchoolScheduleNotFoundException()
+                ScheduleElement(
+                    id = it.id,
+                    name = it.name,
+                    date = it.date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                )
+            }.collectList().block() ?: throw SchoolScheduleNotFoundException()
         }
 
         val scheduleList = withContext(Dispatchers.IO) {
             scheduleRepository.findAllByUserId(userId).filter { it.date.month.value == month }.map {
-                    ScheduleElement(
-                        id = it.id,
-                        name = it.name,
-                        date = it.date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
-                    )
-                }.collectList().block() ?: throw SchoolScheduleNotFoundException()
+                ScheduleElement(
+                    id = it.id,
+                    name = it.name,
+                    date = it.date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                )
+            }.collectList().block() ?: throw SchoolScheduleNotFoundException()
         }
 
         students.addAll(schoolScheduleList)
