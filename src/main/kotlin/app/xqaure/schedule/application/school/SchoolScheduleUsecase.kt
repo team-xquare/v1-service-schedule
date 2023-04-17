@@ -89,7 +89,8 @@ class SchoolScheduleUsecase(
                     name = it.name,
                     date = it.date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
                 )
-            }.collectList().block() ?: throw SchoolScheduleNotFoundException()
+            }.collectList().awaitFirstOrNull()
+                ?: throw SchoolScheduleNotFoundException()
         }
 
         val scheduleList = withContext(Dispatchers.IO) {
@@ -99,7 +100,8 @@ class SchoolScheduleUsecase(
                     name = it.name,
                     date = it.date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
                 )
-            }.collectList().block() ?: throw SchoolScheduleNotFoundException()
+            }.collectList().awaitFirstOrNull()
+                ?: throw SchoolScheduleNotFoundException()
         }
 
         students.addAll(schoolScheduleList)
