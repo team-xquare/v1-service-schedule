@@ -17,7 +17,6 @@ import kotlinx.coroutines.withContext
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Isolation
 import org.springframework.transaction.annotation.Transactional
-import reactor.core.publisher.Flux
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -44,7 +43,9 @@ class SchoolScheduleUsecase(
         ).awaitSingleOrNull()
 
         return responseCreator.onSuccess(
-            code = ADD_SCHEDULE_CODE, propertyName = ADD_SCHEDULE_CODE, schoolSchedule?.id
+            code = ADD_SCHEDULE_CODE,
+            propertyName = ADD_SCHEDULE_CODE,
+            schoolSchedule?.id
         )
     }
 
@@ -55,19 +56,25 @@ class SchoolScheduleUsecase(
         }
 
         return responseCreator.onSuccess(
-            code = MODIFY_SCHEDULE_CODE, propertyName = MODIFY_SCHEDULE_CODE, uuid
+            code = MODIFY_SCHEDULE_CODE,
+            propertyName = MODIFY_SCHEDULE_CODE,
+            uuid
         )
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
     suspend fun deleteSchoolSchedule(uuid: String): BasicResponse {
         val schoolSchedule =
-            schoolScheduleRepository.findById(uuid).awaitSingleOrNull() ?: throw ScheduleNotFoundException()
+            schoolScheduleRepository.findById(uuid)
+                .awaitSingleOrNull() ?: throw ScheduleNotFoundException()
 
-        schoolScheduleRepository.delete(schoolSchedule).awaitSingleOrNull()
+        schoolScheduleRepository.delete(schoolSchedule)
+            .awaitSingleOrNull()
 
         return responseCreator.onSuccess(
-            code = DELETE_SCHEDULE_CODE, propertyName = DELETE_SCHEDULE_CODE, uuid
+            code = DELETE_SCHEDULE_CODE,
+            propertyName = DELETE_SCHEDULE_CODE,
+            uuid
         )
     }
 
@@ -104,8 +111,8 @@ class SchoolScheduleUsecase(
 
     suspend fun queryIsHomecomingDay(date: LocalDate): QueryIsHomecomingDayResponse {
         val schoolSchedule = schoolScheduleRepository.findAllByDate(date)
-            .flatMap {
-                Flux.just(it.name == "의무귀가")
+            .any {
+                it.name == "의무귀가"
             }.awaitFirstOrNull()
             ?: false
 
