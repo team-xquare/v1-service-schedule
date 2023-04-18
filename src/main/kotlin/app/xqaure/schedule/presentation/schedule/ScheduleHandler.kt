@@ -103,8 +103,8 @@ class ScheduleHandler(
         this.bodyToMono<ModifyScheduleRequest>().awaitSingle()
 
     suspend fun getIsHomecomingDay(serverRequest: ServerRequest): ServerResponse {
-        val dateStr = serverRequest.queryParam("date").orElse(LocalDate.now().toString())
-        val date = LocalDate.parse(dateStr)
+        val dateParam = serverRequest.queryParam("date").orElse(LocalDate.now().toString())
+        val date = LocalDate.parse(dateParam)
 
         val response = schoolScheduleUsecase.queryIsHomecomingDay(date)
 
