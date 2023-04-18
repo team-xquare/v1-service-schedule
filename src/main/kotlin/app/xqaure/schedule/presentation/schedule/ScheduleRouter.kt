@@ -13,6 +13,7 @@ class ScheduleRouter {
         "/schedules".nest {
             contentType(MediaType.APPLICATION_JSON)
             GET("/school", scheduleHandler::getSchoolSchedule)
+            GET("/school/is-homecoming", scheduleHandler::getIsHomecomingDay)
             POST("/school", scheduleHandler::addSchoolSchedule)
             PUT("/school/{school-schedule-uuid}", scheduleHandler::modifySchoolSchedule)
             DELETE("/school/{school-schedule-uuid}", scheduleHandler::deleteSchoolSchedule)
