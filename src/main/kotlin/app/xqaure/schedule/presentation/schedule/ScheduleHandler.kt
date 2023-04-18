@@ -44,7 +44,7 @@ class ScheduleHandler(
         val schoolScheduleId = serverRequest.pathVariable("school-schedule-uuid")
         val request = serverRequest.getModifyScheduleRequestBody()
         val response = schoolScheduleUsecase.modifySchoolSchedule(
-            uuid = schoolScheduleId,
+            id = schoolScheduleId,
             name = request.name,
             date = request.date
         )

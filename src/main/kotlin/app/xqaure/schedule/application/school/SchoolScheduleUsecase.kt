@@ -50,22 +50,22 @@ class SchoolScheduleUsecase(
     }
 
     @Transactional
-    suspend fun modifySchoolSchedule(uuid: String, name: String, date: LocalDate): BasicResponse {
-        if (schoolScheduleRepository.updateSchoolSchedule(uuid, name, date) < 0) {
+    suspend fun modifySchoolSchedule(id: String, name: String, date: LocalDate): BasicResponse {
+        if (schoolScheduleRepository.updateSchoolSchedule(id, name, date) < 0) {
             throw SchoolScheduleNotFoundException()
         }
 
         return responseCreator.onSuccess(
             code = MODIFY_SCHEDULE_CODE,
             propertyName = MODIFY_SCHEDULE_CODE,
-            uuid
+            id
         )
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    suspend fun deleteSchoolSchedule(uuid: String): BasicResponse {
+    suspend fun deleteSchoolSchedule(id: String): BasicResponse {
         val schoolSchedule =
-            schoolScheduleRepository.findById(uuid)
+            schoolScheduleRepository.findById(id)
                 .awaitSingleOrNull() ?: throw ScheduleNotFoundException()
 
         schoolScheduleRepository.delete(schoolSchedule)
@@ -74,7 +74,7 @@ class SchoolScheduleUsecase(
         return responseCreator.onSuccess(
             code = DELETE_SCHEDULE_CODE,
             propertyName = DELETE_SCHEDULE_CODE,
-            uuid
+            id
         )
     }
 
