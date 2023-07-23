@@ -1,0 +1,4 @@
+config:
+  name: schedule
+  prefix: /schedules
+  service_type: be
